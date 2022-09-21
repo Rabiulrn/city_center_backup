@@ -1,0 +1,932 @@
+<?php
+session_start();
+if (!isset($_SESSION['username'])) {
+  header('location:../index.php');
+}
+require '../config/config.php';
+require '../lib/database.php';
+$db = new Database();
+$_SESSION['pageName'] = 'employee_new_create';
+$user_name        = $_SESSION['username'];
+$user_type         = $_SESSION['usertype'];
+$is_super_admin      = $_SESSION['is_super_admin'];
+
+$project_name_id = $_SESSION['project_name_id'];
+$edit_data_permission   = $_SESSION['edit_data'];
+$delete_data_permission = $_SESSION['delete_data'];
+$sucMsg = "";
+
+
+if (isset($_POST['data_delete_id'])) {
+  $id = $_POST['data_delete_id'];
+
+  $sql = "DELETE FROM raj_kajerhisab WHERE id = '$id'";
+  $result = $db->delete($sql);
+  if ($result) {
+    $sucMsg = "Data delete successfully !";
+  } else {
+    echo "Error: " . $sql . "<br>" . $db->error;
+  }
+}
+
+
+
+
+?>
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>কর্মচারী হিসাব</title>
+  <meta charset="utf-8">
+  <link rel="shortcut icon" href="../img/Shah logo@1553422164642.jpg" type="image/x-icon" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+  <link rel="stylesheet" href="../css/voucher.css?v=1.0.0">
+  <link rel="stylesheet" href="../css/report.css?v=1.0.0">
+  <link rel="stylesheet" href="../css/doinik_hisab.css?v=1.0.0">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.0/dist/jquery.validate.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+  <style type="text/css">
+    .dateInput {
+      line-height: 22px !important;
+    }
+
+    .allowText {
+      float: right;
+      margin-bottom: 3px;
+    }
+
+    .table-border>tbody>tr>td {
+      border: 1px solid #ddd !important;
+    }
+
+    .table-border>thead>tr>th {
+      border: 1px solid #ddd !important;
+    }
+
+    .backcircle {
+      font-size: 18px;
+      position: absolute;
+      margin-top: -35px;
+    }
+
+    .backcircle a:hover {
+      text-decoration: none !important;
+    }
+
+    .cenText {
+      text-align: center;
+    }
+
+    .submitBtn {
+      width: 100px;
+      float: right;
+    }
+
+    /*         .main_bar{
+            width: 100% !important;
+            margin: 0 auto;
+            padding-left: 10px;
+            padding-right: 10px;
+        } */
+    .main_bar {
+
+      width: calc(86% - 100px) !important;
+    }
+
+    .btn.btn-success.add_button {
+      margin-top: 24px;
+    }
+
+    .remove_button {
+      margin-top: 24px;
+    }
+
+    fieldset.scheduler-border {
+      border: 1px groove #ddd !important;
+      padding: 0 1.4em 1.4em 1.4em !important;
+      margin: 0 0 1.5em 0 !important;
+      -webkit-box-shadow: 0px 0px 0px 0px #000;
+      box-shadow: 0px 0px 0px 0px #000;
+    }
+
+    legend.scheduler-border {
+      font-size: 1.2em !important;
+      font-weight: bold !important;
+      text-align: left !important;
+      width: auto;
+      padding: 0 10px;
+      border-bottom: none;
+    }
+
+    #r_address {
+
+      height: 35px;
+
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+    }
+
+    .modal-dialog {
+      position: fixed;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    .modal-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      border: none;
+    }
+
+    .modal-content {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .modal-body {
+      position: absolute;
+      top: 50px;
+      bottom: 0;
+      font-size: 15px;
+      overflow: auto;
+      margin-bottom: 60px;
+      padding: 0 15px 0;
+      width: 100%;
+    }
+
+    .modal-footer {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 60px;
+      padding: 10px;
+      background: #f1f3f5;
+    }
+
+    .modal-header .close {
+
+      font-size: 35px;
+      margin-top: -32px;
+
+    }
+
+    .displayCon {
+      padding-top: 0;
+    }
+
+    .left_side_bar {
+      height: 120vh !important;
+    }
+
+    .error {
+      color: #fb1515;
+    }
+
+    input[class="error"] {
+      border: 1px solid #f00 !important;
+    }
+
+    input[class="form control error"] {
+      border: 1px solid #f00 !important;
+    }
+
+    .error p {
+      color: #f00 !important;
+    }
+
+    #rajkerMistreeFormTable td label {
+      color: #dd150b;
+    }
+
+    #cancle_hedmistress {
+      margin-left: 20px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <?php
+  include '../navbar/header_text.php';
+  $page = 'employee_new_create';
+  include '../navbar/navbar.php';
+  ?>
+  <div class="bar_con">
+    <div class="left_side_bar">
+      <?php require '../others_page/left_menu_bar_employee.php'; ?>
+    </div>
+    <div class="main_bar">
+      <?php
+      $query = "SELECT * FROM project_heading WHERE id = '$project_name_id'";
+      $show = $db->select($query);
+      if ($show) {
+        while ($rows = $show->fetch_assoc()) {
+      ?>
+          <div class="project_heading" id="project_heading">
+            <h2 class="headingOfAllProject">
+              <?php echo $rows['heading']; ?>
+              <!-- , <span class="protidinHisab"><?php //echo $rows['subheading']; 
+                                                  ?></span> -->
+
+            </h2>
+          </div>
+      <?php
+        }
+      }
+      ?>
+      <div id="success">
+
+      </div>
+
+      <!-- Full Height Modal Right -->
+      <div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+        <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+        <div class="modal-dialog modal-full-height modal-top" role="document">
+
+
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title w-100" id="myModalLabel">Modal title</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Full Height Modal Right -->
+
+      <!-- <strong style="font-size: 18px">কর্মচারী এন্ট্রি</strong> -->
+      <form name="employeeEntryForm" id="employeeEntryForm" enctype="multipart/form-data" style="margin-top:20px ">
+
+        <table class="table table-border table-condensed" id="rajkerMistreeFormTable">
+
+          <thead>
+            <tr>
+              <th class="cenText">যোগদান তারিখ</th>
+
+              <th class="cenText">কর্মচারী নাম</th>
+              <th class="cenText">মোবাইল নাম্বার</th>
+              <th class="cenText">ঠিকানা</th>
+              <th class="cenText">পদবী</th>
+              <th class="cenText">প্রোফাইল ছবি</th>
+              <th class="cenText">নাস্তা বিল</th>
+              <th class="cenText">খাওয়া মিল</th>
+              <th class="cenText">দিনের বেতন</th>
+              <th class="cenText">মারফোত</th>
+
+
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <input type="hidden" name="id" id="id">
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control datepicker jogdaner_tarikh" name="jogdaner_tarikh" id="jogdaner_tarikh">
+                <!-- <p class="name_err"></p> -->
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control" name="employee_name" id="employee_name" placeholder="নাম">
+                <p class="name_err"></p>
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control" name="employee_mobile_num" id="employee_mobile_num" placeholder="মোবাইল নাম্বার">
+                <p class="mobile_num_err"></p>
+
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control" name="employee_address" id="employee_address" placeholder="ঠিকানা">
+              </td>
+
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control" name="employee_designation" id="employee_designation" placeholder="পদবী">
+                <p class="designation_err"></p>
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="hidden" name="employee_old_pic" id="employee_old_pic">
+                <input type="file" class="form-control" name="employee_profile_pic" id="employee_profile_pic">
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control emp_naster_meal" name="emp_naster_meal" id="emp_naster_meal" placeholder="নাস্তা বিল">
+                <p class="naster_meal_err"></p>
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control emp_khaber_meal" name="emp_khaber_meal" id="emp_khaber_meal" placeholder="খাওয়া মিল">
+                <p class="khaber_meal_err"></p>
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control emp_diner_beton" name="emp_diner_beton" id="emp_diner_beton" placeholder="দিনের বেতন">
+                <p class="diner_beton_err"></p>
+              </td>
+              <td colspan="" rowspan="" headers="">
+                <input type="text" class="form-control emp_marphot" name="emp_marphot" id="emp_marphot" placeholder="মারফোত">
+               
+              </td>
+
+
+            </tr>
+          </tbody>
+
+        </table>
+
+        <div class="row">
+          <div class="form-group col-sm-12">
+            <button type="button" name="submit_employee" id="submit_employee" class="btn btn-primary pull-right">Save</button>
+
+            <button type="button" name="cancle_employee" id="cancle_employee" class="btn btn-danger pull-right">Cancle</button>
+            <button style="margin-right: 10px;" type="button" name="update_employee" id="update_employee" class="btn btn-success pull-right">Update</button>
+          </div>
+        </div>
+
+      </form>
+      <div class="displayCon">
+        <h3 style="text-align: center; margin-top: 0px;">কর্মচারী তালিকা</h3>
+
+        <table class="table_dis">
+          <thead>
+            <tr style="background-color: #b5b5b5;">
+              <th class="cenText">নং</th>
+              <th class="cenText">যোগদান তারিখ</th>
+              <th class="cenText">কর্মচারী নাম</th>
+              <th class="cenText">মোবাইল নাম্বার</th>
+              <th class="cenText">ঠিকানা</th>
+              <th class="cenText">পদবী</th>
+              <th class="cenText">প্রোফাইল ছবি</th>
+              <th class="cenText">নাস্তা বিল</th>
+              <th class="cenText">খাওয়া মিল</th>
+              <th class="cenText">দিনের বেতন</th>
+              <th class="cenText">মারফোত</th>
+              <!-- <th class="cenText" style="width: 76px;">view</th> -->
+              <th class="cenText" style="width: 76px;">Delete</th>
+              <th class="cenText" style="width: 59px;">Edit</th>
+
+            </tr>
+
+          </thead>
+          <tbody id="employe_details">
+
+          </tbody>
+
+
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Modal details view -->
+
+
+
+
+
+  <?php include '../others_page/delete_permission_modal.php';  ?>
+
+  <script type="text/javascript">
+    datepickerfunction();
+    $(function() {
+      $("body").on("click", ".add_button", function() {
+        $('.mistree_name_show:last-child').val($("#r_hedmistress").find('option:selected').text());
+        datepickerfunction();
+      });
+    });
+
+    function datepickerfunction() {
+      $('.r_date').datepicker({
+        onSelect: function(date) {
+          // alert(date);
+          $(this).change();
+        },
+        dateFormat: "dd/mm/yy",
+        changeYear: true,
+      }).datepicker("setDate", new Date());
+    }
+
+    $('.datepicker').datepicker({
+      autoclose: true,
+      format: "dd-mm-yyyy",
+      immediateUpdates: true,
+      todayBtn: true,
+      todayHighlight: true
+    }).datepicker("setDate", "0");
+
+    $(document).on('change', '#r_hedmistress', function() {
+
+      $('.mistree_name_show').val($(this).find('option:selected').text());
+    });
+
+    // var $option = $('.r_hedmistress').val();
+    // var value = $option.val();
+    // $(".mistree").val(value);
+    // console.log("value ==========",value);
+    // var text = $option.text();
+
+
+    function delete_row(ele) {
+      var data_row_id = $(ele).attr('data_row_id');
+      $("#verifyPasswordModal").show().height($("html").height() + $(".bar_con").height());
+      $("#matchPassword").val('');
+      $("#passMsg").html('');
+      $("#verifyToDeleteBtn").attr("data_row_id", data_row_id);
+    }
+    $(document).on('click', '#verifyToDeleteBtn', function() {
+      delete_vaucher_credit_data($(this).attr("data_row_id"));
+    });
+
+    function delete_vaucher_credit_data(data_row_id) {
+      console.log(data_row_id);
+      $("#passMsg").html("").css({
+        'margin': '0px'
+      });
+      var pass = $("#matchPassword").val();
+      $.ajax({
+        url: "../ajaxcall/match_password_for_vaucher_credit.php",
+        type: "post",
+        data: {
+          pass: pass
+        },
+        success: function(response) {
+          // alert(response);
+          if (response == 'password_matched') {
+            $('#sucMsg').html('');
+            $("#verifyPasswordModal").hide();
+            ConfirmDialog('Are you sure to delete this entry ?', data_row_id);
+          } else {
+            $("#passMsg").html(response).css({
+              'color': 'red',
+              'margin-top': '10px'
+            });
+          }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+
+      function ConfirmDialog(message, data_row_id) {
+        $('<div></div>').appendTo('body')
+          .html('<div><h4>' + message + '</h4></div>')
+          .dialog({
+            modal: true,
+            title: 'Alert',
+            zIndex: 10000,
+            autoOpen: true,
+            width: '40%',
+            resizable: false,
+            position: {
+              my: "center",
+              at: "center center-20%",
+              of: window
+            },
+            buttons: {
+              Yes: function() {
+                $(this).dialog("close");
+                $.post("employeeFromData.php", {
+                  data_delete_id: data_row_id
+                }, function(data, status) {
+                  console.log(status);
+                  console.log(data);
+                  if (status == 'success') {
+                    // $('#sucMsg').html('succsess');
+                    window.location.href = 'employee_new_create.php';
+                  }
+                });
+              },
+              No: function() {
+                $(this).dialog("close");
+              }
+            },
+            close: function(event, ui) {
+              $(this).remove();
+            }
+          });
+      }
+    }
+
+    function display_update(ele) {
+      console.log(ele);
+      var data_row_id = $(ele).attr('data_row_id');
+      var row_date = $(ele).closest('tr').find('td:eq(1)').text();
+      var row_name = $(ele).closest('tr').find('td:eq(2)').text();
+      var data_row_amount = $(ele).attr('data_row_amount');
+
+      $('#sucMsg').html('');
+      $('#data_row_id').val(data_row_id);
+      $('#submitBtnId').val('Update');
+      $('#r_date1').val(row_date);
+      $('#credit_name1').val(row_name);
+      $('#credit_amount1').val(data_row_amount);
+      $('#add').attr('disabled', '');
+      $('html, body').animate({
+        scrollTop: 0
+      }, 600);
+    }
+  </script>
+  <script type="text/javascript" id="script-1">
+    if ($('.main_bar').innerHeight() > $('.left_side_bar').height()) {
+      $('.left_side_bar').height($('.main_bar').innerHeight() + 34);
+    } else {
+      $('.left_side_bar').height(640);
+    }
+
+    function heightChange() {
+      var left_side_bar_height = $('.left_side_bar').height();
+      var main_bar_height = $('.main_bar').innerHeight();
+      if (left_side_bar_height >= main_bar_height) {
+        // $('.left_side_bar').height(main_bar_height + 25);          
+      } else {
+        $('.left_side_bar').height(main_bar_height + 25);
+      }
+    }
+  </script>
+  <script type="text/javascript">
+    employeeAllData();
+
+    function employeeAllData() {
+
+      var action = "employee_details";
+      $.ajax({
+        url: 'employeeFromData.php',
+        type: 'POST',
+        data: {
+          action: action
+        },
+        success: function(response, status) {
+          $("#employe_details").html(response);
+
+          console.log("datass =============", response)
+        },
+        error: function(data) {
+          //  var errorMessage = xhr.status + ': ' + xhr.statusText
+          alert('Error - ' + data);
+        }
+      });
+
+    }
+
+    $("#employee_profile_pic").change(function() {
+
+      var allowedExtension = ['jpeg', 'jpg', 'png', 'gif'];
+      var fileExtension = document.getElementById('employee_profile_pic').value.split('.').pop().toLowerCase();
+      var isValidFile = false;
+
+      for (var index in allowedExtension) {
+
+        if (fileExtension === allowedExtension[index]) {
+          isValidFile = true;
+          break;
+        }
+      }
+
+      if (!isValidFile) {
+        alert('Allowed image formate should be : *.' + allowedExtension.join(', *.'));
+        $("#employee_profile_pic").val('');
+      }
+
+      return isValidFile;
+
+    });
+
+    $(".emp_naster_meal").keypress(function(e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+          //display error message
+          alert('Should be a number');
+          return false;
+        }
+      });
+      $(".emp_khaber_meal").keypress(function(e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+          //display error message
+          alert('Should be a number');
+          return false;
+        }
+      });
+      $(".emp_diner_beton").keypress(function(e) {
+        //if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+          //display error message
+          alert('Should be a number');
+          return false;
+        }
+      });
+
+            
+    $('#submit_employee').on('click', function() {
+      var jogdaner_tarikh= $("input[name='jogdaner_tarikh']").val();
+      var employee_name = $("input[name='employee_name']").val();
+      var employee_mobile_num = $('input[name="employee_mobile_num"]').val();
+      var employee_address = $('input[name="employee_address"]').val();
+      var employee_designation = $('input[name="employee_designation"]').val();
+      var emp_naster_meal = $('input[name="emp_naster_meal"]').val();
+      var emp_khaber_meal = $('input[name="emp_khaber_meal"]').val();
+      var emp_diner_beton = $('input[name="emp_diner_beton"]').val();
+      var emp_marphot     = $('input[name="emp_marphot"]').val();
+      // var contract = parseFloat($('input[name="contract"]').val());
+      //  var contract                    = parseFloat(contract1);
+      var employee_status = "1";
+      var project_name_id = "<?php echo $_SESSION['project_name_id'] ?>";
+      var action = "employee_insert";
+
+
+      if ($('#employee_name').val().length === 0) {
+        $('.name_err').html('<div class="error">Required field</div>');
+        return false;
+      }
+      if ($('#employee_mobile_num').val() == '') {
+        $('.mobile_num_err').html('<div class="error">Required field</div>');
+        return false;
+      }
+      if ($('#employee_designation').val() == '') {
+        $('.designation_err').html('<div class="error">Required field</div>');
+        return false;
+      }
+      if ($('#emp_naster_meal').val() == '') {
+        $('.naster_meal_err').html('<div class="error">Required field</div>');
+        return false;
+      }
+      if ($('#emp_khaber_meal').val() == '') {
+        $('.khaber_meal_err').html('<div class="error">Required field</div>');
+        return false;
+      }
+      if ($('#emp_diner_beton').val() == '') {
+        $('.diner_beton_err').html('<div class="error"> Required field</div>');
+        return false;
+      }
+
+
+      var formData = new FormData($('#employeeEntryForm')[0]);
+      formData.append("jogdaner_tarikh", jogdaner_tarikh);
+      formData.append("employee_name", employee_name);
+      formData.append("employee_mobile_num", employee_mobile_num);
+      formData.append("employee_address", employee_address);
+      formData.append("employee_designation", employee_designation);
+      formData.append("employee_profile_pic", $('input[name="employee_profile_pic"]')[0].files[0]);
+      formData.append("emp_naster_meal", emp_naster_meal);
+      formData.append("emp_khaber_meal", emp_khaber_meal);
+      formData.append("emp_diner_beton", emp_diner_beton);
+      formData.append("emp_marphot", emp_marphot);
+      formData.append("employee_status", employee_status);
+      formData.append("project_name_id", project_name_id);
+      formData.append("action", action);
+      $.ajax({
+        url: "employeeFromData.php",
+        type: "POST",
+        data: formData,
+        cache: false,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+          console.log("Employee data ========== ", data)
+          //$('#success').html('Data added successfully !'); 
+          if (data) {
+            alert('Data added successfully !');
+            $('#employeeEntryForm')[0].reset();
+            employeeAllData();
+          } else {
+            console.log(data.error);
+          }
+
+        },
+        error: function(error) {
+          //var errorMessage = xhr.status + ': ' + xhr.statusText
+          console.log('Error mistree - ' + error);
+        }
+
+      });
+
+    });
+
+
+    $('#submit_employee').show();
+    $('#update_employee').hide();
+    $('#cancle_employee').hide();
+    $(document).on('click', '#cancle_employee', function() {
+      $('#employeeEntryForm')[0].reset();
+      $('#submit_employee').show();
+      $('#update_employee').hide();
+      $('#cancle_employee').hide();
+
+    });
+
+    $(document).on('click', '.edit_employee', function() {
+      $('#submit_employee').hide();
+      $('#cancle_employee').show();
+      $('#update_employee').show();
+
+      var id = $(this).attr('id');
+      //alert(id);
+      var action = 'edit_single_employee';
+      var data = {
+        id: id,
+        action: action
+      };
+      $.ajax({
+        url: "employeeFromData.php",
+        type: "POST",
+        dataType: "JSON",
+        data: data,
+
+        success: function(data) {
+          console.log("Employee editdata==========", data);
+          $('#id').val(data.id);
+          $('#jogdaner_tarikh').val(data.jogdaner_tarikh);
+          $('#employee_name').val(data.employee_name);
+          $('#employee_mobile_num').val(data.employee_mobile_num);
+          $('#employee_address').val(data.employee_address);
+          $('#employee_designation').val(data.employee_designation);
+          $('#employee_old_pic').val(data.employee_profile_pic);
+          $('#emp_naster_meal').val(data.emp_naster_meal);
+          $('#emp_khaber_meal').val(data.emp_khaber_meal);
+          $('#emp_diner_beton').val(data.emp_diner_beton);
+          $('#emp_marphot').val(data.emp_marphot);
+
+
+          //$('#id').val(data.id);
+          console.log(data);
+
+        },
+        error: function(data) {
+          console.log("Error Employee data===", data);
+        }
+      });
+
+    });
+
+
+
+    $('#update_employee').on('click', function() {
+      var id = $('#id').val();
+      var jogdaner_tarikh= $("input[name='jogdaner_tarikh']").val();
+      var employee_name = $("input[name='employee_name']").val();
+      var employee_mobile_num = $('#employee_mobile_num').val();
+      var employee_address = $('input[name="employee_address"]').val();
+      var employee_designation = $('input[name="employee_designation"]').val();
+      var employee_old_pic = $('input[name="employee_old_pic"]').val();
+      var emp_naster_meal = $('input[name="emp_naster_meal"]').val();
+      var emp_khaber_meal = $('input[name="emp_khaber_meal"]').val();
+      var emp_diner_beton = $('input[name="emp_diner_beton"]').val();
+      var emp_marphot     = $('input[name="emp_marphot"]').val();
+      
+      // var contract = parseFloat($('input[name="contract"]').val());
+      //  var contract                    = parseFloat(contract1);
+      var employee_status = "1";
+      var project_name_id = "<?php echo $_SESSION['project_name_id'] ?>";
+      var action = "employee_update";
+
+
+      if ($('#employee_name').val().length === 0) {
+        $('.name_err').html('<div class="error">Name is required</div>');
+        return false;
+      }
+      if ($('#employee_mobile_num').val() == '') {
+        $('.mobile_num_err').html('<div class="error">This field required</div>');
+        return false;
+      }
+      if ($('#employee_designation').val() == '') {
+        $('.designation_err').html('<div class="error">This field required</div>');
+        return false;
+      }
+
+      var formData = new FormData($('#employeeEntryForm')[0]);
+      formData.append("id", id);
+      formData.append("jogdaner_tarikh", jogdaner_tarikh);
+      formData.append("employee_name", employee_name);
+      formData.append("employee_mobile_num", employee_mobile_num);
+      formData.append("employee_address", employee_address);
+      formData.append("employee_designation", employee_designation);
+      formData.append("employee_profile_pic", $('input[name="employee_profile_pic"]')[0].files[0]);
+      formData.append("employee_old_pic", employee_old_pic);
+      formData.append("emp_naster_meal", emp_naster_meal);
+      formData.append("emp_khaber_meal", emp_khaber_meal);
+      formData.append("emp_diner_beton", emp_diner_beton);
+      formData.append("emp_marphot", emp_marphot);
+      formData.append("action", action);
+
+      $.ajax({
+        url: "employeeFromData.php",
+        type: "POST",
+        data: formData,
+        cache: false,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+          console.log("Mistree update data ========== ", data)
+          //$('#success').html('Data added successfully !'); 
+          alert(data);
+          $('#employeeEntryForm')[0].reset();
+          employeeAllData();
+          location.reload();
+
+        },
+        error: function(error) {
+          //var errorMessage = xhr.status + ': ' + xhr.statusText
+          console.log('Error mistree - ' + error);
+        }
+
+      });
+
+    });
+
+    $(document).on('click', '.deleteBtn', function() {
+
+      var id = $(this).attr('id');
+      //alert(id);
+      var action = 'delete_single';
+      var mydata = {
+        id: id,
+        action: action
+      };
+      $.ajax({
+        url: "raj_kajermistresstable.php",
+        type: "POST",
+        dataType: "JSON",
+        data: mydata,
+
+        success: function(data) {
+          console.log(data);
+          alert(data);
+          getHedmistressDetails();
+
+
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+
+    });
+
+
+
+
+
+    // $(document).on('click', '.viewBtn', function(){
+
+    //    var id = $(this).attr('id');
+    //    //alert(id);
+    //    var action = 'single_view';
+    //    var  mydata = {
+    //     id:id, 
+    //     action:action
+    //   };
+    //    $.ajax({
+    //       url:"raj_LocationInsert.php",
+    //       type:"POST",
+    //       data:mydata,
+    //     success:function(data)
+    //     {
+    //        $("#modal-body").html(data);
+    //       console.log(data);
+
+    //     },
+    //     error: function(data) {
+    //           console.log(data);
+    //         }
+    //   });
+
+    // });
+  </script>
+
+  <script src="../js/common_js.js"></script>
+</body>
+
+</html>

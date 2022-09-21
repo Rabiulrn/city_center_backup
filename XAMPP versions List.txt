@@ -1,0 +1,7 @@
+
+If u not see bangla text as well you have to 
+install following version of xaamp
+
+==== Old Installed Versions ====
+================================
+XAMPP for Windows 7.2.11

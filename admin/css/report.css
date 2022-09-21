@@ -1,0 +1,281 @@
+.backcircle{
+    font-size: 18px;
+    position: absolute;
+    margin-top: -30px;
+    /*margin-left: 18px;*/
+}
+.backcircle a:hover{
+    text-decoration: none !important;
+}	
+.menu{
+  padding: 0px;
+  /*background-color: #40ae40;*/
+  background-color: #d9eed9;
+}	
+.menu a{
+	background-color: #1c9b1c;
+	display: block;
+  width: calc(100% - 23px);
+	color: #fff;
+	font-size: 15px;
+	font-weight: bold;
+	padding: 15px 10px;
+	transition: all .4s;
+	text-decoration: none;
+  padding-left: 30px;
+  /*border-bottom: 2px solid #333;*/
+  margin: 5px 0px;
+  border-left: 10px solid #8e8e8e; 
+  position: relative;
+}
+.menu a::after{
+    content: '';
+    position: absolute;
+    right: -23px;
+    top: 0px;
+    width: 0;
+    height: 0;
+    border-top: 26px solid transparent;
+    border-bottom: 26px solid transparent;
+    border-left: 23px solid #1c9b1c;
+    transition: all .4s;
+}
+
+.menu a:hover::after{
+    border-left: 23px solid #333;
+    transition: all .4s;
+}
+.menu a:hover{
+	background-color: #333;
+	color: #fff;
+	transition: all .4s;
+}
+.menu a.active{
+	background-color: #333;
+	color: #fff;
+}
+.menu a.active::after{
+    border-left: 23px solid #333;
+}
+.newrow{
+	margin: 20px 0px 100px;
+}
+.tableshow{
+  /*margin-bottom: 50px;*/
+  border-collapse: collapse;
+}
+.tableshow, .tableshow tr td,.tableshow tr th{
+	border: 1px solid #ddd;
+	padding: 2px 4px;
+}
+.tableshow tr th{
+	text-align: center;
+	padding: 4px;
+}
+.tableshow{
+	width: 100%;
+}
+.tableshow .cenText{
+	text-align: center;
+}
+.tableshow tr:hover{
+	background-color: #ddd;
+}
+.tableshow tr th{
+	background-color: #8e8e8e;
+}
+.reportHeader{
+	text-align: center;
+	background-color: #ff5e5e;
+	padding: 10px;
+	border-bottom: 3px solid red;
+	margin: 0px;
+}
+.tableGroupColor{
+	background-color: #8e8e8e;
+}
+.srchCon{
+	height: 53px;
+	padding: 10px 0px 10px;
+  position: relative;
+  margin-bottom: 10px;
+}
+.option-contol{
+	width: 110px !important;
+	display: inline-block !important;
+  margin-top: -1px;
+}
+.option-contol-search{
+	width: 260px !important;
+	display: inline-block !important;
+}
+.seachright{
+	position: absolute;
+	right: 0px;
+}
+
+
+.optionsCon{
+	padding: 10px;
+	border: 1px solid #ddd;
+	position: relative;
+	height: 58px;
+}
+.bootstrap-select{
+	width: 115px !important;
+}
+
+#showHide{
+	margin: 0px;
+}
+
+.conlabel {
+  display: inline-block;
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 0px;
+  cursor: pointer;
+  font-size: 14px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 160px;
+}
+
+/* Hide the browser's default checkbox */
+.conlabel input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.conlabel:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.conlabel input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.conlabel input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.conlabel .checkmark:after {
+  left: 6px;
+  top: 3px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.chkboxStylish{
+	margin-left: 10px;
+	width: 150px;
+	position: relative;
+}
+.separator{
+	height: 35px;
+	width: 3px;
+	background-color: #ddd;
+	margin-left: -10px;
+}
+.monthYearcon{
+	margin-left: 5px;
+}
+#advancedFromTo{
+  margin-left: 15px;
+}
+#advancedFromTo, #monthYearcon{
+	display: none;
+}
+.printText{
+  color: green;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+.srchCon .select2-selection__rendered {
+    line-height: 31px !important;
+}
+.srchCon .select2-container .select2-selection--single {
+    height: 35px !important;
+}
+.srchCon .select2-selection__arrow {
+    height: 34px !important;
+}
+.bigdrop{
+  width: 200px !important;
+}
+
+
+.displayCon{
+    padding-top: 70px;
+}
+.table_dis{
+  width: 100%;
+}
+.table_dis tr th, .table_dis tr td{
+    border: 1px solid #ddd;
+    padding: 4px;
+}
+
+@media print {
+  .tableshow{
+    border: 1px solid #ddd;
+  }
+}
+
+
+
+.tableshow tr.cm_row {
+    cursor: pointer;
+}
+.tableshow tr.cm_row:hover{
+    text-decoration: underline;
+    color: #FFF;
+    background-color: #28a745;
+    /*font-weight: bold;*/
+}
+#credit_name_wise_show {
+  display: none;
+}
+.btn-arro-back {
+  display: none;
+}
+.back-arrow-con{
+  margin-top: 20px;
+  text-align: right;
+}
